@@ -2,12 +2,12 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/pdevted/go-rest-api/internal/comment"
+	log "github.com/sirupsen/logrus"
 )
 
 // Handler - stores pointer to comments service
@@ -31,7 +31,7 @@ type Response struct {
 
 // SetupRoutes - sets up all the routes for application
 func (h *Handler) SetupRoutes() {
-	fmt.Println("Setting Up Routes")
+	log.Info("Setting Up Routes")
 	h.Router = mux.NewRouter()
 
 	h.Router.HandleFunc("/api/comment", h.GetAllComments).Methods("GET")
