@@ -20,11 +20,13 @@ func (h *Handler) GetComment(w http.ResponseWriter, r *http.Request) {
 	i, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
 		sendErrorResponse(w, "Unabled to parse UINT from ID", err)
+		return
 	}
 
 	comment, err := h.Service.GetComment(uint(i))
 	if err != nil {
 		sendErrorResponse(w, "Error Retrieving Comment By ID", err)
+		return
 	}
 
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
@@ -40,6 +42,7 @@ func (h *Handler) GetAllComments(w http.ResponseWriter, r *http.Request) {
 	comments, err := h.Service.GetAllComments()
 	if err != nil {
 		sendErrorResponse(w, "Failed to retrieve all comments", err)
+		return
 	}
 	if err := json.NewEncoder(w).Encode(comments); err != nil {
 		panic(err)
@@ -54,10 +57,12 @@ func (h *Handler) PostComment(w http.ResponseWriter, r *http.Request) {
 	var comment comment.Comment
 	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
 		sendErrorResponse(w, "Failed to decode JSON Body", err)
+		return
 	}
 	comment, err := h.Service.PostComment(comment)
 	if err != nil {
 		sendErrorResponse(w, "Failed to post new comment", err)
+		return
 	}
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
 		panic(err)
@@ -72,6 +77,7 @@ func (h *Handler) UpdateComment(w http.ResponseWriter, r *http.Request) {
 	var comment comment.Comment
 	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
 		sendErrorResponse(w, "Failed to decode JSON Body", err)
+		return
 	}
 
 	vars := mux.Vars(r)
@@ -79,11 +85,13 @@ func (h *Handler) UpdateComment(w http.ResponseWriter, r *http.Request) {
 	commentID, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
 		sendErrorResponse(w, "Failed to parse uint from ID", err)
+		return
 	}
 
 	comment, err = h.Service.UpdateComment(uint(commentID), comment)
 	if err != nil {
 		sendErrorResponse(w, "Failed to update comment", err)
+		return
 	}
 
 	if err := json.NewEncoder(w).Encode(comment); err != nil {
@@ -101,11 +109,13 @@ func (h *Handler) DeleteComment(w http.ResponseWriter, r *http.Request) {
 	commentID, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
 		sendErrorResponse(w, "Failed to parse uint from ID", err)
+		return
 	}
 
 	err = h.Service.DeleteComment(uint(commentID))
 	if err != nil {
 		sendErrorResponse(w, "Failed to delete comment by comment ID", err)
+		return
 	}
 
 	if err := json.NewEncoder(w).Encode(Response{Message: "Comment successfully deleted"}); err != nil {
